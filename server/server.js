@@ -3,17 +3,19 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
-const {generateMessage} = require('./utils/message');
+const {generateMessage, generateLocationMessage} = require('./utils/message');
 const publicPath = path.join(__dirname, '../public'); //'join' can omit unneccesry path
 const port = process.env.PORT || 3000;
 var app = express();
 var server = http.createServer(app);
 var io = socketIO(server);
+var numOfPeople = 0;
 
 app.use(express.static(publicPath));
 
 io.on("connection", (socket) => {
   console.log("New user connected");
+  numOfPeople += 1;
   socket.emit("newMessage",
     generateMessage('Admin', 'Welcome to the chat app'));
 
@@ -24,12 +26,17 @@ io.on("connection", (socket) => {
     console.log("create message", newMessage);
     io.emit("newMessage",
       generateMessage(newMessage.from, newMessage.text));
+    callback('This is from the server');
+  });
 
-    callback();
+  socket.on('createLocationMessage', (coords) => {
+    io.emit('newLocationMessage',
+      generateLocationMessage('Admin', coords.latitude, coords.longitude));
   });
 
   socket.on("disconnect", () => {
     console.log("A User Disconnected");
+    numOfPeople -= 1;
     socket.broadcast.emit("newMessage",
       generateMessage('Admin', 'A user leaved chat app'));
   });
