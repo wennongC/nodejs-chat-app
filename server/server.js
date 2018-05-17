@@ -16,9 +16,10 @@ app.use(express.static(publicPath));
 io.on("connection", (socket) => {
   console.log("New user connected");
   numOfPeople += 1;
+  io.emit("currentPeople", numOfPeople);
+
   socket.emit("newMessage",
     generateMessage('Admin', 'Welcome to the chat app'));
-
   socket.broadcast.emit("newMessage",
     generateMessage('Admin', 'New user joined'));
 
@@ -37,6 +38,7 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("A User Disconnected");
     numOfPeople -= 1;
+    io.emit("currentPeople", numOfPeople);
     socket.broadcast.emit("newMessage",
       generateMessage('Admin', 'A user leaved chat app'));
   });

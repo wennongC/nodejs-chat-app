@@ -8,6 +8,10 @@ socket.on("disconnect", function() {
   console.log("Disconnected from server");
 });
 
+socket.on("currentPeople", function(num){
+  $("#currentPeople").text(num);
+});
+
 socket.on("newMessage", function(message) {
   var $li = $('<li></li>');
   $li.text(`${message.from}: ${message.text}`);
@@ -35,6 +39,8 @@ $('#message-form').on("submit", function(e){
     from: 'User',
     text: mes
   }, function(){});
+
+  $('#message-form input').val('');
 });
 
 var $locationButton = $('#send-location');
@@ -44,6 +50,7 @@ $locationButton.on('click', function(){
   }
 
   navigator.geolocation.getCurrentPosition(function(position){
+    console.log(position);
     socket.emit('createLocationMessage', {
       latitude: position.coords.latitude,
       longitude: position.coords.longitude
