@@ -5,19 +5,28 @@
     <meta charset="utf-8">
 
     <link rel="stylesheet" type="text/css" href="css/index.css"/>
+    <link rel="stylesheet" type="text/css" href="css/style.css"/>
   </head>
 
-  <body>
-    <p>Welcome to the simple chat web-app</p>
-    <p>The number of people currently online: <strong><span id="currentPeople"></span></strong></p>
+  <body class="chat">
+    <div class="chat__sidebar">
+      <h3>People</h3>
+      <p id="currentOnline">CURRENT ONLINE: " <span id="currentPeople"></span> "</p>
+      <div id="users"></div>
+    </div>
 
-    <ol id="messages"></ol>
+    <div class="chat__main">
+      <ol id="messages" class="chat__messages"></ol>
 
-    <form id="message-form">
-      <input name="message" type="text" placeholder="Message" />
-      <button>Send</button>
-    </form>
-    <button id="send-location">Send Your Location</button>
+      <div class="chat__footer">
+        <form id="message-form">
+          <input name="message" type="text" placeholder="Message" autofocus autocomplete="off"/>
+          <button>Send</button>
+        </form>
+        <button id="send-location">Send Your Location</button>
+      </div>
+    </div>
+
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/libs/jquery.min.js"></script>
