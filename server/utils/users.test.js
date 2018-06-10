@@ -78,4 +78,9 @@ describe('Users Class', () => {
     var userList = users.getUserList('Area13');
     expect(userList).toEqual(['Code:002', 'Code:016']);
   });
+
+  it('should not add duplicate user name', () => {
+    expect(users.duplicateNameCheck('Code:001')).toBeFalsy();
+    expect(users.duplicateNameCheck('Code:039')).toBe(true);
+  })
 });

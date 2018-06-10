@@ -25,6 +25,7 @@ socket.on("connect", function() {
       window.location.href = '/';
     }else{
       console.log('Join room seccessfully');
+      $('#chatPage-title').text(`${params.room}(Chat Room)`);
     };
   });
 });

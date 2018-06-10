@@ -12,23 +12,26 @@ var app = express();
 var server = http.createServer(app);
 var io = socketIO(server);
 var users = new Users();
-var numOfPeople = 0;
 
 app.use(express.static(publicPath));
 
 io.on("connection", (socket) => {
-  numOfPeople += 1;
-  io.emit("currentPeople", numOfPeople);
 
   socket.on('join', (params, callback) => {
+    params.name = params.name.trim();
+    params.room = params.room.trim();
     if(!isRealString(params.name) || !isRealString(params.room)){
       return callback('User name and Room name are required');
+    }
+    if(!users.duplicateNameCheck(params.name)){
+      return callback('This user name have been used already');
     }
 
     socket.join(params.room);
     users.removeUser(socket.id);
     users.addUser(socket.id, params.name, params.room);
     console.log(`>>> ${params.name} IS JOINING ${params.room}`);
+    io.emit("currentPeople", users.users.length);//update users information
 
     io.to(params.room).emit("updateUserList",
       users.getUserList(params.room));
@@ -67,8 +70,7 @@ io.on("connection", (socket) => {
       io.to(user.room).emit("newMessage",
         generateMessage('Admin', `The user "${user.name}" leaved chat app`));
 
-      numOfPeople -= 1;
-      io.emit("currentPeople", numOfPeople);
+      io.emit("currentPeople", users.users.length);//update users information
       console.log(`>>> ${user.name} IS LEAVING ${user.room}`);
     }
   });

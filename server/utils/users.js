@@ -1,8 +1,8 @@
-[{
-  id: 'socket id',
-  name: 'name',
-  room: 'room'
-}];
+// [{
+//   id: 'socket id',
+//   name: 'name',
+//   room: 'room'
+// }];
 
 class Users{
   constructor(){
@@ -20,12 +20,19 @@ class Users{
     if(user){
       this.users = this.users.filter((user) => user.id !== id);
     }
-
     return user;
   }
 
   getUser(id){
     return this.users.filter((user) => user.id === id )[0];
+  }
+
+  duplicateNameCheck(name){
+    if((this.users.filter((user) => user.name == name)).length===0){
+      return true;
+    }else{
+      return false;
+    }
   }
 
   getUserList(room){
