@@ -1,4 +1,10 @@
-#currentOnline{
-  color: white;
-  margin-left: 9%;
+p{
+  color: black;
+  font-style: italic;
+  font-size: 0.88em;
+}
+
+p.warning{
+  margin-top: 1px;
+  color: red;
 }

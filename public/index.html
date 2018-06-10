@@ -5,25 +5,39 @@
   <title>Chat APP By Wennong</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   <link rel="stylesheet" type="text/css" href="css/style.css"/>
+  <link rel="stylesheet" type="text/css" href="css/index.css"/>
 </head>
 <body class="centered-form">
   <div class="centered-form__form">
-    <form action="/chat.html">
+    <form id="login" action="/chat.html">
       <div class="form-field">
-        <h3>Join a Chat</h3>
+        <h3>Live Chat</h3>
       </div>
       <div class="form-field">
         <label>User Name</label>
-        <input type="text" name="name" autofocus autocomplete="off"/>
+        <input type="text" name="name" placeholder="Required" autofocus autocomplete="off"/>
+        <p id="name-warn" class="warning"></p>
+      </div>
+      <div class="form-field" id="createRoom">
+        <label>Room Name</label>
+        <input type="text" name="room" placeholder="Required" autocomplete="off"/>
+        <p id="room-warn" class="warning"></p>
       </div>
       <div class="form-field">
-        <label>Room Name</label>
-        <input type="text" name="room" autocomplete="off"/>
+        <label>or Select existed room</label>
+        <select name="currentRoom">
+          <option value="default">N/A</option>
+        </select>
+        <p>(existed room now: <span id="num">0</span> )</p>
       </div>
       <div class="form-field">
         <button>Join</button>
       </div>
     </form>
   </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/libs/jquery.min.js"></script>
+  <script src="/js/index.js"></script>
 </body>
 </html>

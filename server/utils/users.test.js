@@ -82,5 +82,9 @@ describe('Users Class', () => {
   it('should not add duplicate user name', () => {
     expect(users.duplicateNameCheck('Code:001')).toBeFalsy();
     expect(users.duplicateNameCheck('Code:039')).toBe(true);
-  })
+  });
+
+  it('should return all DISTINCT room name', () => {
+    expect(users.getRoomList().length).toBe(2);
+  });
 });

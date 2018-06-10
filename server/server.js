@@ -4,7 +4,7 @@ const express = require('express');
 const socketIO = require('socket.io');
 
 const {generateMessage, generateLocationMessage} = require('./utils/message');
-const {isRealString} = require('./utils/validation');
+const {isRealString, omitSpace} = require('./utils/validation');
 const {Users} = require('./utils/users');
 const publicPath = path.join(__dirname, '../public'); //'join' can omit unneccesry path
 const port = process.env.PORT || 3000;
@@ -17,14 +17,21 @@ app.use(express.static(publicPath));
 
 io.on("connection", (socket) => {
 
+  io.emit("updateRoomList", users.getRoomList());//update rooms information
+  socket.on("nameCheck", (name, callback) => {
+    if(!users.duplicateNameCheck(name)){
+      return callback('*This user name have been used already');
+    }
+  })
+
   socket.on('join', (params, callback) => {
-    params.name = params.name.trim();
-    params.room = params.room.trim();
+    params.name = omitSpace(params.name);
+    params.room = omitSpace(params.room);
     if(!isRealString(params.name) || !isRealString(params.room)){
       return callback('User name and Room name are required');
     }
     if(!users.duplicateNameCheck(params.name)){
-      return callback('This user name have been used already');
+      return callback('This user name have been used already, plase change to another one.');
     }
 
     socket.join(params.room);
@@ -32,6 +39,7 @@ io.on("connection", (socket) => {
     users.addUser(socket.id, params.name, params.room);
     console.log(`>>> ${params.name} IS JOINING ${params.room}`);
     io.emit("currentPeople", users.users.length);//update users information
+    io.emit("updateRoomList", users.getRoomList());//update rooms information
 
     io.to(params.room).emit("updateUserList",
       users.getUserList(params.room));
@@ -44,7 +52,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("createMessage", (newMessage, callback) => {
-
 
     var user = users.getUser(socket.id);
     if(user && isRealString(newMessage.text)){
@@ -71,6 +78,7 @@ io.on("connection", (socket) => {
         generateMessage('Admin', `The user "${user.name}" leaved chat app`));
 
       io.emit("currentPeople", users.users.length);//update users information
+      io.emit("updateRoomList", users.getRoomList());//update rooms information
       console.log(`>>> ${user.name} IS LEAVING ${user.room}`);
     }
   });

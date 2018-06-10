@@ -40,6 +40,14 @@ class Users{
     var namesArray = users.map((user) => user.name);
     return namesArray;
   }
+
+  getRoomList(){
+    var seen = {};
+    var rooms = this.users.map((user) => user.room);
+    return rooms.filter((room) => {
+      return seen.hasOwnProperty(room) ? false : (seen[room] = true);
+    });
+  }
 }
 
 module.exports = {Users};
